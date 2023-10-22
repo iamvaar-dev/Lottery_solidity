@@ -12,7 +12,7 @@ contract lottery{
     }
 
 function participate() public payable{
-    require(msg.value==1 ether, "Please pay 1 ether");
+    require(msg.value==90 ether, "Please pay 90 ether");
     players.push(payable (msg.sender));
 } 
 
@@ -25,17 +25,21 @@ function random() public view returns(uint){
  return uint(keccak256(abi.encodePacked(msg.sender, players.length,block.timestamp)));
 }
 
-function pickWinner() public  {
+function pickWinner() public {
     require(msg.sender==manager, "You are not manager");
     require(players.length>=2, "There are no 2 two players");
     uint rr = random();
     uint index = rr%players.length;
     winner = players[index];
-    uint test1 = (address(this).balance/1000000000000000000);
-    uint8 a = (uint8(test1));
-    uint8 b = a* 95/100;
-    winner.transfer(b);
+   
+    winner.transfer(address(this).balance*95/100);
     players = new address payable[](0);
+
+}
+
+function tr(address payable _reciever) public  payable{
+    require(msg.sender==manager, "Not the manager");
+    _reciever.transfer(address(this).balance);
 
 }
 
